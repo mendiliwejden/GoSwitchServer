@@ -6,18 +6,79 @@ import javax.validation.constraints.*;
 public class SignupRequest {
     @NotBlank
     @Size(min = 3, max = 20)
-    private String username;
+    private String firstName;
+
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String lastName;
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String destination;
+
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String numTel;
+
+    @NotBlank
+    @Size(min = 3, max = 20)
+    private String region;
+
+
+    @Size(min = 3, max = 20)
+    private String facebook;
 
     @NotBlank
     @Size(max = 50)
     @Email
-    private String email;
+    private String username;
 
-    private Set<String> role;
+    public String getFirstName() {
+        return firstName;
+    }
 
-    @NotBlank
-    @Size(min = 6, max = 40)
-    private String password;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getNumTel() {
+        return numTel;
+    }
+
+    public void setNumTel(String numTel) {
+        this.numTel = numTel;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
 
     public String getUsername() {
         return username;
@@ -27,12 +88,12 @@ public class SignupRequest {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
+    public Set<String> getRole() {
+        return role;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRole(Set<String> role) {
+        this.role = role;
     }
 
     public String getPassword() {
@@ -43,11 +104,11 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRole() {
-        return this.role;
-    }
+    private Set<String> role;
 
-    public void setRole(Set<String> role) {
-        this.role = role;
-    }
+    @NotBlank
+    @Size(min = 6, max = 40)
+    private String password;
+
+
 }
