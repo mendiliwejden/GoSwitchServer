@@ -17,23 +17,34 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long id;
 
+    public UserDetailsImpl(Long id, String username, String firstName, String lastName, String numTel, String destination, String facebook, String region, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.numTel = numTel;
+        this.destination = destination;
+        this.facebook = facebook;
+        this.region = region;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
     private String username;
 
-    private String email;
+    private String firstName;
+    private String lastName;
+    private String numTel;
 
+    private String destination;
+    private String facebook;
+    private String region;
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
-                           Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
+
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream()
@@ -43,7 +54,12 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getDestination(),
+                user.getFacebook(),
+                user.getRegion(),
                 user.getPassword(),
                 authorities);
     }
@@ -57,10 +73,30 @@ public class UserDetailsImpl implements UserDetails {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+
+    public String getFirstName() {
+        return firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getNumTel() {
+        return numTel;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public String getRegion() {
+        return region;
+    }
     @Override
     public String getPassword() {
         return password;

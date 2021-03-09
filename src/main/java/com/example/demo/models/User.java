@@ -15,8 +15,7 @@ import java.util.Set;
 @Entity
 @Table(	name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "username")
         })
 public class User {
         @Id
@@ -25,7 +24,7 @@ public class User {
 
         @NotBlank
         @Size(max = 20)
-        private String username;
+        private String firstName;
 
         @NotBlank
         @Size(max = 20)
@@ -50,46 +49,36 @@ public class User {
         private String region;
 
         private String facebook;
-
+        @NotBlank
         private String destination;
 
         @NotBlank
         @Size(max = 50)
         @Email
-        private String email;
+        private String username;
 
         @NotBlank
         @Size(max = 120)
         private String password;
 
-
-        @NotBlank
-        private String cin;
-
-        @NotBlank
-        private String steg;
-
-
-        @ManyToMany(fetch = FetchType.LAZY)
-        @JoinTable(	name = "user_roles",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id"))
-        private Set<Role> roles = new HashSet<>();
-
         public User() {
         }
 
-        //
-        public User(String username, String email, String password) {
+        public User(@NotBlank @Size(max = 20) String firstName, @NotBlank @Size(max = 20) String lastName, @NotNull @NotBlank(message = "Please enter your phone number") String phoneNumber, @NotBlank @Size(max = 120) String region, String facebook, @NotBlank String destination, @NotBlank @Size(max = 50) @Email String username, @NotBlank @Size(max = 120) String password) {
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.phoneNumber = phoneNumber;
+                this.region = region;
+                this.facebook = facebook;
+                this.destination = destination;
                 this.username = username;
-                this.email = email;
                 this.password = password;
+
         }
 
-        //constructor with all fields
-        public User(Long id, @NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 20) String lastName, @NotNull @NotBlank(message = "Please enter your phone number") String phoneNumber, String phoneNumber2, Date debutDispo, Date endDispo, @NotBlank @Size(max = 120) String region, String facebook, String destination, @NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password, @NotBlank String cin, @NotBlank String steg, Set<Role> roles) {
+        public User(Long id, @NotBlank @Size(max = 20) String firstName, @NotBlank @Size(max = 20) String lastName, @NotNull @NotBlank(message = "Please enter your phone number") String phoneNumber, String phoneNumber2, Date debutDispo, Date endDispo, @NotBlank @Size(max = 120) String region, String facebook, @NotBlank String destination, @NotBlank @Size(max = 50) @Email String username, @NotBlank @Size(max = 120) String password, @NotBlank String cin, @NotBlank String steg, Set<Role> roles) {
                 this.id = id;
-                this.username = username;
+                this.firstName = firstName;
                 this.lastName = lastName;
                 this.phoneNumber = phoneNumber;
                 this.phoneNumber2 = phoneNumber2;
@@ -98,22 +87,7 @@ public class User {
                 this.region = region;
                 this.facebook = facebook;
                 this.destination = destination;
-                this.email = email;
-                this.password = password;
-                this.cin = cin;
-                this.steg = steg;
-                this.roles = roles;
-        }
-
-        //constructor without facebook disponibilite and phone number 2
-        public User(Long id, @NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 20) String lastName, @NotNull @NotBlank(message = "Please enter your phone number") String phoneNumber, @NotBlank @Size(max = 120) String region, String destination, @NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password, @NotBlank String cin, @NotBlank String steg, Set<Role> roles) {
-                this.id = id;
                 this.username = username;
-                this.lastName = lastName;
-                this.phoneNumber = phoneNumber;
-                this.region = region;
-                this.destination = destination;
-                this.email = email;
                 this.password = password;
                 this.cin = cin;
                 this.steg = steg;
@@ -128,12 +102,12 @@ public class User {
                 this.id = id;
         }
 
-        public String getUsername() {
-                return username;
+        public String getFirstName() {
+                return firstName;
         }
 
-        public void setUsername(String username) {
-                this.username = username;
+        public void setFirstName(String firstName) {
+                this.firstName = firstName;
         }
 
         public String getLastName() {
@@ -142,22 +116,6 @@ public class User {
 
         public void setLastName(String lastName) {
                 this.lastName = lastName;
-        }
-
-        public String getEmail() {
-                return email;
-        }
-
-        public void setEmail(String email) {
-                this.email = email;
-        }
-
-        public String getPassword() {
-                return password;
-        }
-
-        public void setPassword(String password) {
-                this.password = password;
         }
 
         public String getPhoneNumber() {
@@ -176,6 +134,30 @@ public class User {
                 this.phoneNumber2 = phoneNumber2;
         }
 
+        public Date getDebutDispo() {
+                return debutDispo;
+        }
+
+        public void setDebutDispo(Date debutDispo) {
+                this.debutDispo = debutDispo;
+        }
+
+        public Date getEndDispo() {
+                return endDispo;
+        }
+
+        public void setEndDispo(Date endDispo) {
+                this.endDispo = endDispo;
+        }
+
+        public String getRegion() {
+                return region;
+        }
+
+        public void setRegion(String region) {
+                this.region = region;
+        }
+
         public String getFacebook() {
                 return facebook;
         }
@@ -192,36 +174,20 @@ public class User {
                 this.destination = destination;
         }
 
-        public String getRegion() {
-                return region;
+        public String getUsername() {
+                return username;
         }
 
-        public void setRegion(String region) {
-                this.region = region;
+        public void setUsername(String username) {
+                this.username = username;
         }
 
-        public Set<Role> getRoles() {
-                return roles;
+        public String getPassword() {
+                return password;
         }
 
-        public void setRoles(Set<Role> roles) {
-                this.roles = roles;
-        }
-
-        public Date getDebutDispo() {
-                return debutDispo;
-        }
-
-        public void setDebutDispo(Date debutDispo) {
-                this.debutDispo = debutDispo;
-        }
-
-        public Date getEndDispo() {
-                return endDispo;
-        }
-
-        public void setEndDispo(Date endDispo) {
-                this.endDispo = endDispo;
+        public void setPassword(String password) {
+                this.password = password;
         }
 
         public String getCin() {
@@ -239,4 +205,27 @@ public class User {
         public void setSteg(String steg) {
                 this.steg = steg;
         }
+
+        public Set<Role> getRoles() {
+                return roles;
+        }
+
+        public void setRoles(Set<Role> roles) {
+                this.roles = roles;
+        }
+
+        @NotBlank
+        private String cin;
+
+        @NotBlank
+        private String steg;
+
+
+        @ManyToMany(fetch = FetchType.LAZY)
+        @JoinTable(	name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+        private Set<Role> roles = new HashSet<>();
+
+
 }
