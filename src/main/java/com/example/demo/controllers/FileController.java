@@ -50,7 +50,7 @@ public class FileController {
                 .body(fileDB.getData());
     }
 
-    @GetMapping( "/GetImage/{id}" )
+    @GetMapping( "/getImage/{id}" )
     public FileDB getImage(@PathVariable("id") String id) throws IOException {
 
         Optional<FileDB> retrievedImage = storageService.findImageByname(id);
