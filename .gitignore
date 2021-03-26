@@ -19,6 +19,10 @@ target/
 *.iml
 *.ipr
 
+### Eclipse ###
+/bin
+src/main/resources/META-INF
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

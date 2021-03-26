@@ -1,9 +1,9 @@
 package com.example.demo.security.services;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 import com.example.demo.models.Home;
 import com.example.demo.models.User;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 
 public interface HomeService {
 
