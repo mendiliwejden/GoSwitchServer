@@ -1,6 +1,7 @@
 package com.example.demo.models.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +35,7 @@ public class HomeDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date end;
 
-	private String photo;
+	private List<String> photos;
 	private boolean published;
 
 	private boolean wifi;
