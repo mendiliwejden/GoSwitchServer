@@ -3,7 +3,9 @@ package com.example.demo.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -24,6 +26,10 @@ public class FileDB {
     private String id;
 
     private String name;
+    
+    @ManyToOne
+	@JoinColumn(name = "homeId", referencedColumnName = "id", nullable = true)
+	private Home home;
 
     private String type;
 

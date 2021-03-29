@@ -1,13 +1,11 @@
 package com.example.demo.controllers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.mapper.HomeMapper;
 import com.example.demo.models.Home;
 import com.example.demo.models.dto.HomeDTO;
 import com.example.demo.repository.HomeRepository;
@@ -38,11 +36,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/home")
 public class HomeController {
 
-	private static Logger logger = LoggerFactory.getLogger(FileController.class);
+
 	@Autowired
 	HomeRepository homeRepository;
 
 	HomeService homeService;
+	HomeMapper mapper = new HomeMapper();
 
 	@Autowired
 	UserRepository userRepository;
@@ -82,7 +81,7 @@ public class HomeController {
 	}
 
 	@PostMapping("/addHome")
-	public ResponseEntity<Home> createHome(@RequestParam("file") MultipartFile file, @RequestParam("home") String homee)
+	public ResponseEntity<Home> createHome(@RequestParam("home") String homee)
 			throws JsonMappingException, JsonProcessingException {
 		System.out.println("Ok .............");
 		HomeDTO h = new ObjectMapper().readValue(homee, HomeDTO.class);
@@ -122,24 +121,6 @@ public class HomeController {
 			home.setRadio(h.isRadio());
 			home.setRefrigrrateur(h.isRefrigrrateur());
 
-			// store image
-			InputStream inputStream = file.getInputStream();
-			String originalName = file.getOriginalFilename();
-			String name = file.getName();
-			String contentType = file.getContentType();
-			long size = file.getSize();
-			logger.info("inputStream: " + inputStream);
-			logger.info("originalName: " + originalName);
-			logger.info("name: " + name);
-			logger.info("contentType: " + contentType);
-			logger.info("size: " + size);
-
-			if (file != null) {
-				System.out.println("file is here");
-				String fileDB = fileStorageService.store(file).getId();
-				home.setPhoto(fileDB);
-			}
-
 			homeRepository.save(home);
 			return new ResponseEntity<>(home, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -169,7 +150,7 @@ public class HomeController {
 			home1.setEnd(_home.getEnd());
 			home1.setUserId(_home.getUserId());
 			home1.setPublished(true);
-			home1.setPhoto(_home.getPhoto());
+			home1.setPhotos(_home.getPhotos());
 			Home result = homeRepository.save(home1);
 			homeRepository.deleteById(id);
 			return new ResponseEntity<>(result, HttpStatus.OK);
@@ -227,14 +208,17 @@ public class HomeController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	@GetMapping("/HomeListByRegion/{region}")
-	public ResponseEntity<List<Home>> getHomeListByRegion(@PathVariable("region") String region) {
-		List<Home> homeList = homeRepository.findByRegion(region);
 
-		if (homeList != null) {
-			return new ResponseEntity<>(homeList, HttpStatus.OK);
-		} else {
+	@GetMapping("/HomeListByRegion/{region}")
+	public ResponseEntity<List<HomeDTO>> getHomeListByRegion(@PathVariable("region") String region) {
+		List<Home> homeList = homeRepository.findByRegion(region);
+		List<HomeDTO> homeListDto = new ArrayList<>();
+
+		if (!homeList.isEmpty()) {
+			homeListDto = homeList.stream().map(home -> mapper.mapToDTO(home)).collect(Collectors.toList());
+			return new ResponseEntity<>(homeListDto, HttpStatus.OK);
+		}
+		{
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
