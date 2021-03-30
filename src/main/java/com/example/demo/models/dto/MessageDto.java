@@ -6,7 +6,7 @@ import lombok.Data;
 public class MessageDto {
 
 	private String nom;
-	private String phoneNumber;
+	private String NumTel;
 	private String email;
 	private String sujet;
 	private String message;
