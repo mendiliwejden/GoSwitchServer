@@ -21,7 +21,10 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(	name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username")

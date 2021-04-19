@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,11 +32,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/home")
 public class HomeController {
-
 
 	@Autowired
 	HomeRepository homeRepository;
@@ -50,31 +50,41 @@ public class HomeController {
 	FileStorageService fileStorageService;
 
 	@GetMapping("/allHome")
-	public ResponseEntity<List<Home>> getAllTutorials(@RequestParam(required = false) String title) {
+	public ResponseEntity<List<HomeDTO>> getAllHome() {
 		try {
-			List<Home> homes = new ArrayList<Home>();
+			List<Home> homeList = homeRepository.findAll();
+			List<HomeDTO> homeListDto = new ArrayList<>();
 
-			if (title == null)
-				homeRepository.findAll().forEach(homes::add);
-//            else
-//                homeRepository.findByTitleContaining(title).forEach(tutorials::add);
-
-			if (homes.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			if (!homeList.isEmpty()) {
+				homeListDto = homeList.stream().map(home -> mapper.mapToDTO(home)).collect(Collectors.toList());
+				return new ResponseEntity<>(homeListDto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-
-			return new ResponseEntity<>(homes, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	@GetMapping("/HomeListByRegion/{region}")
+	public ResponseEntity<List<HomeDTO>> getHomeListByRegion(@PathVariable("region") String region) {
+		List<Home> homeList = homeRepository.findByRegionAndPublished(region, true);
+		List<HomeDTO> homeListDto = new ArrayList<>();
+
+		if (!homeList.isEmpty()) {
+			homeListDto = homeList.stream().map(home -> mapper.mapToDTO(home)).collect(Collectors.toList());
+			return new ResponseEntity<>(homeListDto, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@GetMapping("/getHome/{id}")
-	public ResponseEntity<Home> getHomeById(@PathVariable("id") long id) {
+	public ResponseEntity<HomeDTO> getHomeById(@PathVariable("id") long id) {
 		Optional<Home> home = homeRepository.findById(id);
 
 		if (home.isPresent()) {
-			return new ResponseEntity<>(home.get(), HttpStatus.OK);
+			return new ResponseEntity<>(mapper.mapToDTO(home.get()), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -128,35 +138,21 @@ public class HomeController {
 		}
 	}
 
-	@PostMapping(value = "/updateHomePublished/{id}")
-	public ResponseEntity<Home> updateHomePublished(@PathVariable("id") long id) throws IOException {
+	@PutMapping(value = "/updateHomePublished/{id}/{state}")
+	public ResponseEntity<HomeDTO> updateHomePublished(@PathVariable("id") long id,
+			@PathVariable("state") boolean state) throws IOException {
+		Home result = new Home();
 		// home passed
-		Optional<Home> homeData = homeRepository.findById(id);
+		Home homeData = homeRepository.findById(id).get();
 
-		if (homeData.isPresent()) {
-			Home _home = homeData.get();
+		if (homeData != null) {
 
-			Home home1 = new Home();
-			home1.setEtages(_home.getEtages());
-			home1.setTitle(_home.getTitle());
-			home1.setLits(_home.getLits());
-			home1.setBalcons(_home.getBalcons());
-			home1.setTerrasses(_home.getTerrasses());
-			home1.setBains(_home.getBains());
-			home1.setChambres(_home.getChambres());
-			home1.setLogement(_home.getLogement());
-			home1.setRegion(_home.getRegion());
-			home1.setDebut(_home.getDebut());
-			home1.setEnd(_home.getEnd());
-			home1.setUserId(_home.getUserId());
-			home1.setPublished(true);
-			home1.setPhotos(_home.getPhotos());
-			Home result = homeRepository.save(home1);
-			homeRepository.deleteById(id);
-			return new ResponseEntity<>(result, HttpStatus.OK);
+			homeData.setPublished(state);
+			result = homeRepository.save(homeData);
+			return new ResponseEntity<>(mapper.mapToDTO(result), HttpStatus.OK);
 
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(mapper.mapToDTO(result), HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -209,17 +205,4 @@ public class HomeController {
 		}
 	}
 
-	@GetMapping("/HomeListByRegion/{region}")
-	public ResponseEntity<List<HomeDTO>> getHomeListByRegion(@PathVariable("region") String region) {
-		List<Home> homeList = homeRepository.findByRegion(region);
-		List<HomeDTO> homeListDto = new ArrayList<>();
-
-		if (!homeList.isEmpty()) {
-			homeListDto = homeList.stream().map(home -> mapper.mapToDTO(home)).collect(Collectors.toList());
-			return new ResponseEntity<>(homeListDto, HttpStatus.OK);
-		}
-		{
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
 }
