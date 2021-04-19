@@ -23,7 +23,7 @@ import com.example.demo.models.ExchangeRequest;
 import com.example.demo.repository.ExchangeRequestRepository;
 import com.example.demo.repository.UserRepository;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/homeExchange")
 public class ExchangeRequestController {

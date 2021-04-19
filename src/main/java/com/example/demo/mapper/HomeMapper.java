@@ -15,6 +15,7 @@ public class HomeMapper {
 		if (entity != null) {
 			result = new HomeDTO();
 			result.setId(entity.getId());
+			result.setUserId(entity.getUserId());
 			result.setEtages(entity.getEtages());
 			result.setLits(entity.getLits());
 			result.setBalcons(entity.getBalcons());

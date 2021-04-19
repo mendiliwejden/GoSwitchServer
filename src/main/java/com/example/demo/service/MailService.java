@@ -43,7 +43,7 @@ public class MailService {
 
 				Message message = new MimeMessage(session);
 				message.setFrom(new InternetAddress("from.mail.id@gmail.com"));
-				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("amarasalim29@gmail.com"));
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("goswitch.tn@gmail.com"));
 				message.setSubject(messageDto.getSujet());
 				message.setText("PFA");
 
